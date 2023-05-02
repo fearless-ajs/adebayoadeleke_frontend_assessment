@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import config from "../config/config";
 import axios from "axios";
 
 const initialState = {
@@ -11,12 +12,13 @@ const initialState = {
 
 export const LoginUser = createAsyncThunk("user/LoginUser", async(user, thunkAPI) => {
     try {
-        const response = await axios.post('http://localhost:5000/login', {
+        const response = await axios.post(`${config.api_url}/login`, {
             email: user.email,
             password: user.password
         });
         return response.data;
     } catch (error) {
+        alert(error.response.data.message);
         if(error.response){
             const message = error.response.data.msg;
             return thunkAPI.rejectWithValue(message);
@@ -26,7 +28,7 @@ export const LoginUser = createAsyncThunk("user/LoginUser", async(user, thunkAPI
 
 export const getMe = createAsyncThunk("user/getMe", async(_, thunkAPI) => {
     try {
-        const response = await axios.get('http://localhost:5000/me');
+        const response = await axios.get('http://localhost:5000/api/me');
         return response.data;
     } catch (error) {
         if(error.response){
@@ -37,7 +39,7 @@ export const getMe = createAsyncThunk("user/getMe", async(_, thunkAPI) => {
 });
 
 export const LogOut = createAsyncThunk("user/LogOut", async() => {
-    await axios.delete('http://localhost:5000/logout');
+    await axios.delete('http://localhost:5000/api/logout');
 });
 
 export const authSlice = createSlice({
